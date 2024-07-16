@@ -21,17 +21,16 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up dotnet
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
-         3.1.x
-         5.0.x
          6.0.x
+         8.0.x
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
@@ -46,21 +45,12 @@ jobs:
       run: |
         dotnet build --configuration Release --version-suffix "$GITHUB_RUN_ID-prerelease" --no-restore
 
-    - name: Run tests on mac and linux
-      if: ${{ !startsWith(matrix.os, 'windows') }}
-      env:
-        TINIFY_KEY: ${{ secrets.TINIFY_KEY }}
-      run: |
-        dotnet test --configuration Release --no-build --verbosity normal --framework netcoreapp3.1 test/Tinify.Tests
-        dotnet test --configuration Release --no-build --verbosity normal --framework net5.0 test/Tinify.Tests
-        dotnet test --configuration Release --no-build --verbosity normal --framework net6.0 test/Tinify.Tests
-
-    - name: Run tests on windows
-      if: startsWith(matrix.os, 'windows')
+    - name: Run tests
       env:
         TINIFY_KEY: ${{ secrets.TINIFY_KEY }}
       run: |
         dotnet test --configuration Release --no-build --verbosity normal --framework net6.0 test/Tinify.Tests
+        dotnet test --configuration Release --no-build --verbosity normal --framework net8.0 test/Tinify.Tests
 
   integrationTests:
     if: github.event_name == 'push'
@@ -75,16 +65,16 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up dotnet
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
-         3.1.x
          6.0.x
+         8.0.x
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
@@ -104,8 +94,8 @@ jobs:
       env:
         TINIFY_KEY: ${{ secrets.TINIFY_KEY }}
       run: |
-        dotnet test --configuration Release --no-build --verbosity normal --framework netcoreapp3.1 test/Tinify.Tests.Integration
         dotnet test --configuration Release --no-build --verbosity normal --framework net6.0 test/Tinify.Tests.Integration
+        dotnet test --configuration Release --no-build --verbosity normal --framework net8.0 test/Tinify.Tests.Integration
 
     - name: Run tests on windows
       if: startsWith(matrix.os, 'windows')
@@ -124,14 +114,14 @@ jobs:
       - "integrationTests"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Set up dotnet
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 8.0.x
 
       - name: Check if properly tagged
         run: |
