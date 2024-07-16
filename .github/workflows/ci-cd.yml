@@ -61,7 +61,6 @@ jobs:
         dotnet test --configuration Release --no-build --verbosity normal --framework net6.0 test/Tinify.Tests
         dotnet test --configuration Release --no-build --verbosity normal --framework net8.0 test/Tinify.Tests
 
-
   integrationTests:
     if: github.event_name == 'push'
     runs-on: ${{ matrix.os }}
@@ -106,7 +105,6 @@ jobs:
       run: |
         dotnet test --configuration Release --no-build --verbosity normal --framework net6.0 test/Tinify.Tests.Integration
         dotnet test --configuration Release --no-build --verbosity normal --framework net8.0 test/Tinify.Tests.Integration
-
 
     - name: Run tests on windows
       if: startsWith(matrix.os, 'windows')
