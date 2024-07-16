@@ -45,16 +45,7 @@ jobs:
       run: |
         dotnet build --configuration Release --version-suffix "$GITHUB_RUN_ID-prerelease" --no-restore
 
-    - name: Run tests on mac and linux
-      if: ${{ !startsWith(matrix.os, 'windows') }}
-      env:
-        TINIFY_KEY: ${{ secrets.TINIFY_KEY }}
-      run: |
-        dotnet test --configuration Release --no-build --verbosity normal --framework net6.0 test/Tinify.Tests
-        dotnet test --configuration Release --no-build --verbosity normal --framework net8.0 test/Tinify.Tests
-
-    - name: Run tests on windows
-      if: startsWith(matrix.os, 'windows')
+    - name: Run tests
       env:
         TINIFY_KEY: ${{ secrets.TINIFY_KEY }}
       run: |
